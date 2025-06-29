@@ -31,5 +31,26 @@ select
 			from cte1
 		)
 	select * from cte2 where drnk<=2;
+
+/* Gross sales Invoice*/
+    
+    SELECT 
+        `fs`.`date` AS `date`,
+        `fs`.`fiscal_year` AS `fiscal_year`,
+        `fs`.`customer_code` AS `customer_code`,
+        `fs`.`product_code` AS `product_code`,
+        `dp`.`product` AS `product`,
+        `dp`.`variant` AS `variant`,
+        `fs`.`sold_quantity` AS `sold_quantity`,
+        `fgp`.`gross_price` AS `gross_price`,
+        ROUND((`fgp`.`gross_price` * `fs`.`sold_quantity`),
+                2) AS `gross_price_total`
+    FROM
+        (((`fact_sales_monthly` `fs`
+        JOIN `dim_customer` `dc` ON ((`fs`.`customer_code` = `dc`.`customer_code`)))
+        JOIN `dim_product` `dp` ON ((`fs`.`product_code` = `dp`.`product_code`)))
+        JOIN `fact_gross_price` `fgp` ON (((`fgp`.`product_code` = `fs`.`product_code`)
+            AND (`fgp`.`fiscal_year` = `fs`.`fiscal_year`))))
+
     
     
